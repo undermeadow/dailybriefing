@@ -3,13 +3,12 @@
 THE DAILY OVERFIELD - reusable masthead template.
 
 plate_template.jpg is fixed art: ornament, ribbons, wordmark, medallion, rules
-and "TWO CENT EDITION". This script stamps on the three things that change:
+and "TWO CENT EDITION". This script stamps on the two things that change:
 
     * weather panel  (left block, almanac-column layout)
-    * issue number   (folio, left)
-    * date           (folio, centre)
+    * date           (folio, flush left)
 
-    python3 masthead_template.py --issue 8 --cond "Mostly Sunny" --hi 85 --lo 62 --rain 5
+    python3 masthead_template.py --cond "Mostly Sunny" --hi 85 --lo 62 --rain 5
 """
 import argparse, datetime, math
 from PIL import Image, ImageDraw, ImageFont
@@ -25,8 +24,10 @@ SS    = 3              # supersample factor
 FOLIO_BASE  = 1343      # baseline of the folio row
 FOLIO_CAP   = 41        # cap height of the folio type
 FOLIO_TRACK = 1.2
-ISSUE_LEFT  = 219       # left edge of "NO. 11" in the original
-DATE_CENTRE = 1457      # optical centre of the original date string
+FOLIO_LEFT  = 219       # left edge of the folio row. Held the issue number until
+                        # 2026-09-15; the date now sets flush left from here.
+                        # "TWO CENT EDITION" is baked into the plate at x2192-2757,
+                        # so the date has 219-2192 to run in before it would collide.
 WX_CX       = 380       # centre line of the weather panel
 WX_HALF     = 210       # half-width of its rules
 
@@ -73,7 +74,7 @@ def folio_date(dt):
     return f"{dt.strftime('%A').upper()},  {dt.strftime('%B').upper()} {ordinal(dt.day)}, {dt.year}"
 
 # ---------------------------------------------------------------------------
-def build(issue, dt, cond, hi, lo, rain, out="masthead_out.png"):
+def build(dt, cond, hi, lo, rain, out="masthead_out.png"):
     base = Image.open(PLATE).convert("RGB")
     W, H = base.size
     L = Image.new("RGBA", (W * SS, H * SS), (0, 0, 0, 0))
@@ -126,10 +127,8 @@ def build(issue, dt, cond, hi, lo, rain, out="masthead_out.png"):
 
     # ---- folio ----
     f_folio = F(B700, FOLIO_CAP * SS)
-    T(d, f"NO. {issue}", f_folio, ISSUE_LEFT * SS, FOLIO_BASE * SS,
+    T(d, folio_date(dt), f_folio, FOLIO_LEFT * SS, FOLIO_BASE * SS,
       tr=FOLIO_TRACK * SS, anchor="l")
-    T(d, folio_date(dt), f_folio, DATE_CENTRE * SS, FOLIO_BASE * SS,
-      tr=FOLIO_TRACK * SS, anchor="c")
 
     sm = L.resize((W, H), Image.LANCZOS)
     base.paste(sm.convert("RGB"), (0, 0), sm.split()[3])
@@ -138,7 +137,6 @@ def build(issue, dt, cond, hi, lo, rain, out="masthead_out.png"):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--issue", type=int, required=True)
     p.add_argument("--date", default=None, help="YYYY-MM-DD (default: today)")
     p.add_argument("--cond", required=True)
     p.add_argument("--hi", type=float, required=True)
@@ -147,4 +145,4 @@ if __name__ == "__main__":
     p.add_argument("--out", default="masthead_out.png")
     a = p.parse_args()
     dt = datetime.date.fromisoformat(a.date) if a.date else datetime.date.today()
-    print(build(a.issue, dt, a.cond, a.hi, a.lo, a.rain, a.out))
+    print(build(dt, a.cond, a.hi, a.lo, a.rain, a.out))

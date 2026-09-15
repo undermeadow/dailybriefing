@@ -5,7 +5,7 @@ THE DAILY OVERFIELD - briefing PDF builder.
 Renders the masthead, then sets the briefing body underneath it as an ordinary
 readable document (single column, headings, lists, tables) and prints to PDF.
 
-    python3 build_brief.py --issue 8 --body brief.md \
+    python3 build_brief.py --body brief.md \
         --cond "Mostly Sunny" --hi 85 --lo 62 --rain 5
 """
 import argparse, base64, datetime, subprocess, os
@@ -97,7 +97,7 @@ hr{border:0;border-top:1.4px solid var(--hair);margin:20px 0}
   background-image:url(data:image/png;base64,%(tile)s);
   background-repeat:repeat;
   @bottom-left{
-    content:"THE DAILY OVERFIELD \\00b7  NO. %(issue)s";
+    content:"THE DAILY OVERFIELD \\00b7  %(folio)s";
     font-family:'Head',serif;font-size:8pt;letter-spacing:.10em;color:var(--soft);
     border-top:1.1px solid var(--rule);width:100%%;padding-top:4px;
   }
@@ -136,9 +136,9 @@ def md_to_html(path):
 MAST_PX = 2200          # ~300dpi across a 7.24in text block; the 2970px plate is
                         # ~410dpi and embeds at 6MB, which is most of the file size
 
-def build(issue, dt, body_md, cond, hi, lo, rain, out="briefing.pdf", keep_html=False):
+def build(dt, body_md, cond, hi, lo, rain, out="briefing.pdf", keep_html=False):
     from PIL import Image
-    mast = mt.build(issue, dt, cond, hi, lo, rain, "masthead_run.png")
+    mast = mt.build(dt, cond, hi, lo, rain, "masthead_run.png")
     im = Image.open(mast).convert("RGB")
     im = im.resize((MAST_PX, round(im.height * MAST_PX / im.width)), Image.LANCZOS)
     im = match_paper(im)
@@ -149,7 +149,8 @@ def build(issue, dt, body_md, cond, hi, lo, rain, out="briefing.pdf", keep_html=
                  bb=b64(f"{F}/LibreBask-700.ttf"),  bbi=b64(f"{F}/LibreBask-700i.ttf"),
                  hb=b64(f"{F}/PlayfairDisplay-latin-700-normal.ttf"))
 
-    html = PAGE % dict(css=CSS % dict(fonts, issue=issue, tile=b64(paper_tile())),
+    html = PAGE % dict(css=CSS % dict(fonts, folio=mt.folio_date(dt),
+                                      tile=b64(paper_tile())),
                        mast=b64(mast), body=md_to_html(body_md))
     hpath = "briefing_body.html"
     open(hpath, "w").write(html)
@@ -163,7 +164,6 @@ def build(issue, dt, body_md, cond, hi, lo, rain, out="briefing.pdf", keep_html=
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--issue", type=int, required=True)
     p.add_argument("--date", default=None)
     p.add_argument("--body", required=True)
     p.add_argument("--cond", required=True)
@@ -173,4 +173,4 @@ if __name__ == "__main__":
     p.add_argument("--out", default="briefing.pdf")
     a = p.parse_args()
     dt = datetime.date.fromisoformat(a.date) if a.date else datetime.date.today()
-    print(build(a.issue, dt, a.body, a.cond, a.hi, a.lo, a.rain, a.out))
+    print(build(dt, a.body, a.cond, a.hi, a.lo, a.rain, a.out))
