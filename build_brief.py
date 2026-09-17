@@ -5,8 +5,9 @@ THE DAILY OVERFIELD - briefing PDF builder.
 Renders the masthead, then sets the briefing body underneath it as an ordinary
 readable document (single column, headings, lists, tables) and prints to PDF.
 
-    python3 build_brief.py --body brief.md \
-        --cond "Mostly Sunny" --hi 85 --lo 62 --rain 5
+    python3 build_brief.py --body brief.md --out "Overfield-Daily-YYYY-MM-DD.pdf"
+
+No weather arguments: the weather panel was removed 2026-09-16.
 """
 import argparse, base64, datetime, subprocess, os
 import masthead_template as mt
@@ -136,9 +137,9 @@ def md_to_html(path):
 MAST_PX = 2200          # ~300dpi across a 7.24in text block; the 2970px plate is
                         # ~410dpi and embeds at 6MB, which is most of the file size
 
-def build(dt, body_md, cond, hi, lo, rain, out="briefing.pdf", keep_html=False):
+def build(dt, body_md, out="briefing.pdf", keep_html=False):
     from PIL import Image
-    mast = mt.build(dt, cond, hi, lo, rain, "masthead_run.png")
+    mast = mt.build(dt, "masthead_run.png")
     im = Image.open(mast).convert("RGB")
     im = im.resize((MAST_PX, round(im.height * MAST_PX / im.width)), Image.LANCZOS)
     im = match_paper(im)
@@ -166,11 +167,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--date", default=None)
     p.add_argument("--body", required=True)
-    p.add_argument("--cond", required=True)
-    p.add_argument("--hi", type=float, required=True)
-    p.add_argument("--lo", type=float, required=True)
-    p.add_argument("--rain", type=float, default=0)
     p.add_argument("--out", default="briefing.pdf")
     a = p.parse_args()
     dt = datetime.date.fromisoformat(a.date) if a.date else datetime.date.today()
-    print(build(dt, a.body, a.cond, a.hi, a.lo, a.rain, a.out))
+    print(build(dt, a.body, a.out))
