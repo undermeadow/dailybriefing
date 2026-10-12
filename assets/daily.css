@@ -1,0 +1,68 @@
+/* THE DAILY OVERFIELD - page stylesheet (data only; read by WeasyPrint) */
+@font-face{font-family:'Body';src:url(libre-baskerville-latin-400-normal.woff);font-weight:400;font-style:normal}
+@font-face{font-family:'Body';src:url(libre-baskerville-latin-400-italic.woff);font-weight:400;font-style:italic}
+@font-face{font-family:'Body';src:url(libre-baskerville-latin-700-normal.woff);font-weight:700;font-style:normal}
+@font-face{font-family:'Body';src:url(libre-baskerville-latin-700-italic.woff);font-weight:700;font-style:italic}
+@font-face{font-family:'Head';src:url(playfair-display-latin-700-normal.woff);font-weight:700}
+
+:root{ --ink:#2b2418; --soft:#574a3a; --rule:#3a3024; --hair:#bfae93; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Body',Georgia,serif;font-size:10.2pt;line-height:1.55;
+     color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* masthead: the plate image with the date set over the folio row.
+   Geometry is the plate's own (2970px original, shown at 521.3pt wide):
+   folio left edge 219px, baseline 1343px, cap height 41px, tracking 1.2px. */
+.mast{position:relative;margin:0 0 22px}
+.mast img{display:block;width:100%}
+.mast .folio{position:absolute;left:38.44pt;top:226.42pt;
+     font-family:'Head',serif;font-weight:700;font-size:10.16pt;line-height:10.16pt;
+     letter-spacing:0.284pt;color:rgb(52,47,28);white-space:pre}
+
+h1{font-family:'Head',serif;font-size:17pt;margin:26px 0 10px;letter-spacing:.01em}
+h2{font-family:'Head',serif;font-size:14pt;margin:26px 0 4px;letter-spacing:.02em;
+   page-break-after:avoid}
+h2::after{content:"";display:block;border-bottom:2.2px solid var(--rule);margin-top:5px}
+h3{font-family:'Head',serif;font-size:11.6pt;margin:18px 0 4px;page-break-after:avoid}
+h2+p,h2+ul,h3+p,h3+ul{margin-top:6px}
+
+p{margin:0 0 9px}
+ul,ol{margin:0 0 10px;padding-left:20px}
+li{margin:0 0 5px}
+li>ul{margin-top:5px}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Body',serif;font-style:italic;background:none}
+hr{border:0;border-top:1.4px solid var(--hair);margin:20px 0}
+
+@page{
+  size:Letter;
+  margin:14mm 16mm 19mm 16mm;
+  background-color:#eeddc4;
+  background-image:url(paper_tile.png);
+  background-repeat:repeat;
+  @bottom-left{
+    content:"THE DAILY OVERFIELD \00b7  " string(folio);
+    font-family:'Head',serif;font-size:8pt;letter-spacing:.10em;color:var(--soft);
+    border-top:1.1px solid var(--rule);width:100%;padding-top:4px;
+  }
+  @bottom-right{
+    content:"PAGE " counter(page) " OF " counter(pages);
+    font-family:'Head',serif;font-size:8pt;letter-spacing:.10em;color:var(--soft);
+    border-top:1.1px solid var(--rule);width:100%;padding-top:4px;text-align:right;
+  }
+}
+@page:first{ @bottom-left{content:none;border:0} @bottom-right{content:none;border:0} }
+.mast .folio{string-set:folio content()}
+
+blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid var(--rule);color:var(--soft)}
+
+table{border-collapse:collapse;width:100%;margin:4px 0 14px;font-size:9.4pt}
+th,td{text-align:left;padding:5px 9px;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-family:'Head',serif;font-weight:700;border-bottom:2px solid var(--rule)}
+
+h2,h3{break-after:avoid;break-inside:avoid}
+tr,li,blockquote{break-inside:avoid}
+table{break-inside:auto}
+thead{break-after:avoid}
+p{orphans:2;widows:2}
