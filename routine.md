@@ -30,7 +30,7 @@ one-line live re-check offer in the checklist.
 
 ## Tool-call budget
 A turn has a tool-call limit of roughly 50. The whole run is one turn. A normal run should
-use about 36. Every step below names its call cost. Do not add calls the routine does not
+use about 37. Every step below names its call cost. Do not add calls the routine does not
 call for: no exploratory re-reads, no second research passes, no verification reads the
 routine has not asked for. If something fails, note it in the brief and move on rather
 than retrying repeatedly.
@@ -68,6 +68,7 @@ be reached, an offer that needs a yes or no. Everything else belongs in the run 
 6. SocialPilot API (3 calls)
 7. SocialPilot Pending Review in the built-in browser (2 calls)
 8. Web research (at most 5 calls)
+8b. TV Daily page (1 call)
 9. Write build/brief.md, build and check, look at page 1 (3 calls)
 10. Archive markdown to Drive (1 call)
 11. State-page write (1 call)
@@ -331,6 +332,30 @@ place; December 14 1963 is correct. Never surface the Sep 14 variant.
 
 GENERAL: several tools in this stack underreport on first call. Treat a single empty or
 zero result as unconfirmed, and say so, rather than as a finding.
+
+## TELEVISION — 1 call
+The TV tracker is a GitHub Actions job that runs at 3am Chicago and rewrites one Notion
+page, "TV Daily", page id 3f981281-afeb-8146-99b0-f3f36bf6e32b. This ID is PERMANENT.
+Fetch it directly by ID with notion-fetch (1 call); never search for it, never read the
+TV Shows or TV Alerts databases, and never write to anything under the TV page.
+
+The page has a first line saying when it was written, then four headings, each a bullet
+list or a single "nothing" line: Tonight, Rest of this week (through Sunday), Unwatched
+(episodes aired but not yet marked watched, with the span and the latest air date), and
+Show news (renewals, cancellations, premiere dates set). A fifth heading, Not checked,
+appears only when some shows could not be looked up.
+
+Brief section, headed TELEVISION, the LAST section of the brief, after SOCIALPILOT:
+copy the four lists over as they stand, same order, same wording, dropping any "nothing"
+line whose heading has real entries. Do not add shows, do not editorialise, do not list
+anything beyond Sunday, and do not suggest what to watch. If every list is a "nothing"
+line, write one line: "Nothing on the TV side."
+
+Critical-items block: one line per Tonight entry, nothing else from this section.
+
+If the page's first line is dated earlier than yesterday, say so in one line at the top
+of the section ("TV data is from <date>; the nightly job did not run") and still copy
+the lists. If the fetch fails, say so in one line and carry on; never retry.
 
 ## BEFORE SUGGESTING ANY CALENDAR ENTRY
 Compare against the target calendar's events from the D-7 to D+7 list on the underlying
