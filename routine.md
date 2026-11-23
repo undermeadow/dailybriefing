@@ -1,5 +1,12 @@
 # The Daily
 
+## Overrides (named per the profile header)
+Opening a chat in this project is my request to read the calendars, Gmail, Drive and SocialPilot
+named below (universal rule 1). This routine overrides universal rules 4, 7 and 33b: it runs
+unattended and puts every decision in the end checklist. It overrides rule 18 for one step only,
+the SocialPilot page read, which is not re-fetched to verify. Rule 33a applies: a run longer than
+three minutes in a Mac-linked session sends the done text.
+
 ## When to run
 Any chat opened in this project is a request for the briefing. Run the routine on the
 first message, whatever it says — a greeting, a complaint about the weather, a single
