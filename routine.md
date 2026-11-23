@@ -218,7 +218,7 @@ with no extra call. Once its date is more than 7 days past it drops off the chec
 ## NINA SIMONE — TODAY
 1. Calendar: today's entries from the list above, with attached asset filenames.
 2. Email — 1 call: Gmail search_threads, pageSize 50, THREAD_VIEW_MINIMAL:
-   label:ninasimone.com newer_than:60d category:primary -from:noreply -from:no-reply -from:notifications -subject:"Automatic reply" -subject:"Out of office"
+   label:"ninasimone.com" newer_than:60d -category:updates -category:promotions -category:social -category:forums -from:noreply -from:no-reply -from:notifications -subject:"Automatic reply" -subject:"Out of office"
    Scan the WHOLE 60-day window. List threads where someone else spoke last AND a reply is
    genuinely owed. Skip courtesy closes. If Aaron acted by forwarding rather than replying,
    list it but say so. Separate genuinely-owed replies from stale or probably-moot ones.
